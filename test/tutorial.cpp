@@ -2,7 +2,8 @@
 
 #include <iostream>
 #include <stdio.h>
-
+#include <string.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -15,6 +16,7 @@ using namespace std;
 #else
 	#include <sys/socket.h>
 	#include <netdb.h>
+	#include <arpa/inet.h>
 #endif
 
 
@@ -22,11 +24,15 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     printf("Startup\r\n");
+
+    
+#ifdef WINDOWS
 	WSADATA wsaData;
 	if (WSAStartup(MAKEWORD(2, 0), &wsaData) != 0) {
 		fprintf(stderr, "WSAStartup failed.\n");
 		exit(1);
 	}
+#endif
 
 	int status;
 	struct addrinfo hints;
@@ -49,8 +55,11 @@ int main(int argc, char *argv[]) {
 	addr = &(ipv4->sin_addr);
 	inet_ntop(servinfo->ai_family, addr, ipstr, sizeof ipstr);
 	printf("%s\r\n", ipstr);
-	
+
+
+#ifdef WINDOWS	
 	WSACleanup();
+#endif	
     return(0);
 
 }
